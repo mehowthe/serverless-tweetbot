@@ -2,17 +2,21 @@ service: aws-node-cotozazwierz-bot
 
 custom:
   bucket: cotozazwierz-bot-images
-  apiGatewayPath: xxxxxxxxx # update after first deployment
 
 provider:
   name: aws
   runtime: nodejs8.10
   stage: dev
   region: eu-west-1
-  
+
   environment:
-    WEBHOOK_URL: "https://${apiGatewayPath}.execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}/handle"
     TWITTER_ENV: dev
+    WEBHOOK_URL:
+      Fn::Join:
+        - ""
+        - - "https://"
+          - Ref: "ApiGatewayRestApi"
+          - ".execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}/handle"
 
   iamRoleStatements:
     - Effect: "Allow"
