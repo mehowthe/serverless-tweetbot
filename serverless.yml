@@ -1,0 +1,111 @@
+service: aws-node-cotozazwierz-bot
+
+custom:
+  bucket: cotozazwierz-bot-images
+  apiGatewayPath: xxxxxxxxx # update after first deployment
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: dev
+  region: eu-west-1
+  
+  environment:
+    WEBHOOK_URL: "https://${apiGatewayPath}.execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}/handle"
+    TWITTER_ENV: dev
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - s3:*
+      Resource: "arn:aws:s3:::${self:custom.bucket}/*"
+    - Effect: "Allow"
+      Action:
+        - "rekognition:*"
+      Resource: "*"
+    -  Effect: "Allow"
+       Action:
+         - "s3:PutBucketNotification"
+       Resource:
+         Fn::Join:
+           - ""
+           - - "arn:aws:s3:::${self:custom.bucket}"
+
+package:
+  include:
+    - serverless.yml
+
+functions:
+  crc: #Challenge-Response Checks 
+    handler: handler.webhookCheck
+    events:
+      - http:
+          path: handle
+          method: get
+  webhookRegister:
+    handler: handler.webhookRegister
+    events:
+      - http:
+          path: webhook
+          method: post
+  webhookUpdate:
+    handler: handler.webhookUpdate
+    events:
+      - http:
+          path: webhook
+          method: put
+  webhookDelete:
+    handler: handler.webhookDelete
+    events:
+      - http:
+          path: webhook
+          method: delete
+  webhookList:
+    handler: handler.webhookList
+    events:
+      - http:
+          path: webhook
+          method: get
+  subscribe:
+    handler: handler.subscribe
+    events:
+      - http:
+          path: subscribe
+          method: post
+  subscribeList:
+    handler: handler.subscribeList
+    events:
+      - http:
+          path: subscribe
+          method: get
+  handle:
+    handler: handler.webhookHandle
+    events:
+      - http:
+          path: handle
+          method: post
+    environment:
+      BUCKET: ${self:custom.bucket}
+  process:
+    handler: handler.imageAnalysis
+    events:
+      - s3:
+          bucket: ${self:custom.bucket}
+          event: s3:ObjectCreated:*
+    environment:
+      BUCKET: ${self:custom.bucket}
+
+resources:
+  Resources:
+    ProcessLambdaPermissionPhotosS3:
+      Type: "AWS::Lambda::Permission"
+      Properties:
+        FunctionName:
+          "Fn::GetAtt":
+            - ProcessLambdaFunction
+            - Arn
+        Principal: "s3.amazonaws.com"
+        Action: "lambda:InvokeFunction"
+        SourceAccount:
+          Ref: AWS::AccountId
+        SourceArn: "arn:aws:s3:::${self:custom.bucket}"

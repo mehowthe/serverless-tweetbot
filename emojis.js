@@ -1,0 +1,33 @@
+const EMOJIS = {
+    'mouse' : '🐭',
+    'dog' : '🐶',
+    'cat' : '🐈',
+    'monkey' : '🐒',
+    'rat' : '🐀',
+    'horse': '🐎',
+    'bird': '🐦',
+    'fox': '🦊',
+    'tiger': '🐅',
+    'unicorn': '🦄',
+    'cow': '🐮',
+    'pig': '🐷',
+    'camel': '🐪',
+    'elephant': '🐘',
+    'koala': '🐨',
+    'panda': '🐼',
+    'chicken': '🐔',
+    'snake': '🐍',
+    'frog': '🐸',
+    'fish': '🐟',
+    'honeybee': '🐝',
+    'snail': '🐌',
+    'spider': '🕷️',
+    'bear': '🐻',
+    'hedgehog': '🦔',
+    'crocodile': '🐊',
+    'turle': '🐢',
+    'lizard': '🦎',
+    'whale': '🐋'
+};
+
+module.exports = EMOJIS;
