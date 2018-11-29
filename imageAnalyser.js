@@ -15,7 +15,7 @@ class ImageAnalyser {
         },
       },
       MaxLabels: 10,
-      MinConfidence: 75,
+      MinConfidence: 50,
     };
 
     console.log(`Analyzing file: https://s3.amazonaws.com/${s3Config.bucket}/${s3Config.imageName}`);

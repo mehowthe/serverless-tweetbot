@@ -1,7 +1,7 @@
 'use strict';
 
 const EMOJIS = require('./emojis');
-const TOO_GENERIC_LABELS = ['animal', 'mammal', 'pet'];
+const TOO_GENERIC_LABELS = ['animal', 'mammal', 'pet', 'food', 'dish'];
 
 class MessageCreator {
     
@@ -10,13 +10,12 @@ class MessageCreator {
       console.log('>> Creating response from labels: ', JSON.stringify(imageLabels));
       return new Promise((resolve, reject) => {
           
-        if (imageLabels.length < 2) {
+        if (imageLabels.length < 1) {
             console.log('Not enough labels');
             return resolve('I don\'t know... It\'s too hard for me 😞😞')
         }
 
         const names = imageLabels
-            .sort((first, second) => second.Parents.length - first.Parents.length)
             .map(label => label.Name)
             .map(label => label.toLowerCase())
             
@@ -57,8 +56,8 @@ class MessageCreator {
         const additionalLabel = labels.length > 1 ? ('/' + labels[1]) : '';
 
         return Math.random() >= 0.5
-            ? `hmm.. I don\'t think it is an animal.. isn't this just a ${labels[0]}/${additionalLabel}? 🤔`
-            : `This doesn\'t look like an animal to me 🤔 Is it a ${labels[0]}/${additionalLabel}?`
+            ? `hmm.. I don\'t think it is an animal.. isn't this just a ${labels[0]}${additionalLabel}? 🤔`
+            : `This doesn\'t look like an animal to me 🤔 Is this some ${labels[0]}${additionalLabel}?`
     }
 
 }
