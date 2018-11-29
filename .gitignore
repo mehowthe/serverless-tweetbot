@@ -4,4 +4,4 @@ node_modules
 # Serverless directories
 .serverless
 
-#config.js
+config.js

@@ -6,7 +6,7 @@ Respond to tweets mentioning this bot -> recognizing animals on attached images
 
 ### How-to
 + [Twitter Developer Account ](https://developer.twitter.com) - create account and setup new app (follow [documentation](https://developer.twitter.com/en/docs/basics/apps)) (stage name is `dev`)
-+ Setup values in `config.json`
++ Setup values in `config.js`
 + setup AWS account - create S3 bucket and update `custom.bucket` name in `serverless.yaml`
 + deploy application with `serverless deploy` (assuming you have installed [serverless](https://serverless.com))
 + Make two calls to Twitter API (using API Gateway)
