@@ -15,33 +15,52 @@ class MessageCreator {
             return resolve('I don\'t know... It\'s too hard for me 😞😞')
         }
 
-        const names = imageLabels.map(label => label.Name)
-            .map(label => label.toLowerCase());
+        const names = imageLabels
+            .sort((first, second) => second.Parents.length - first.Parents.length)
+            .map(label => label.Name)
+            .map(label => label.toLowerCase())
+            
         
         const isAnimal = names
             .filter(label => label === 'animal')
             .length == 1;
 
-        const animalLabels = names
+        const labels = names
             .filter(label => TOO_GENERIC_LABELS.indexOf(label) === -1)
             .filter(label => label.indexOf('life') == -1)
-        console.log('Filtered labels: ' + animalLabels);
+        console.log('Filtered labels: ' + labels);
             
-        const emoji = animalLabels.map(label => EMOJIS[label] || '')
+        const emoji = labels.map(label => EMOJIS[label] || '')
             .filter(emoji => emoji !== '')
             .join('');
         console.log('Found emoji: ' + emoji);
-        
-        const additionalLabel = animalLabels.length > 1 ? ('/' + animalLabels[1]) : '';
-        
+
         const msg = isAnimal
-            ? `I know! It is a ${animalLabels[0]}${additionalLabel}, am I right? ${emoji}${emoji}`
-            : `hmm.. I don\'t think it is an animal.. isn't this just a ${names[0]}/${names[1]}? 🤔`;
+            ? MessageCreator.animalResponse(labels, emoji)
+            : MessageCreator.nonAnimalResponse(labels);
 
         console.log('Formatted message:', msg);
         return resolve(msg);
     });
   }
+  
+    static animalResponse(labels, emoji) {
+        
+        const additionalLabel = labels.length > 1 ? ('/' + labels[1]) : '';
+        return Math.random() >= 0.5
+            ? `I know! It is a ${labels[0]}${additionalLabel}, am I right? ${emoji}${emoji}`
+            : `It looks like a ${labels[0]}${additionalLabel} to me. What do you think? ${emoji}${emoji}`
+    }
+
+    static nonAnimalResponse(labels) {
+        
+        const additionalLabel = labels.length > 1 ? ('/' + labels[1]) : '';
+
+        return Math.random() >= 0.5
+            ? `hmm.. I don\'t think it is an animal.. isn't this just a ${labels[0]}/${additionalLabel}? 🤔`
+            : `This doesn\'t look like an animal to me 🤔 Is it a ${labels[0]}/${additionalLabel}?`
+    }
+
 }
 
 module.exports = MessageCreator;
